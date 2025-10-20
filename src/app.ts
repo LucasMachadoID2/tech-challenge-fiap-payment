@@ -1,17 +1,17 @@
-import express from "express";
-import routerV1 from "./routes/routesV1";
+import express, { Application } from "express";
 import cors from "cors";
+import paymentRoutes from "./routes/paymentRoutes";
+import { API_VERSION } from "./config";
 
-function createApp() {
+const createApp = (): Application => {
   const app = express();
 
+  app.use(cors());
   app.use(express.json());
 
-  app.use("/api/v1.0", routerV1);
-
-  app.use(cors());
+  app.use(`/api/${API_VERSION}`, paymentRoutes);
 
   return app;
-}
+};
 
 export default createApp;
