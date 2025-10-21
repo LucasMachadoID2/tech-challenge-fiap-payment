@@ -1,9 +1,17 @@
-import axios from "axios";
+import { MercadoPagoConfig, Payment } from "mercadopago";
 import { v4 as uuidv4 } from "uuid";
 import { HttpResponse } from "../models/http-response-model";
 import * as PaymentModel from "../models/paymentModel";
 import * as HttpHelper from "../utils/http-helper";
 import { MERCADO_PAGO_TOKEN } from "../config";
+
+// 🔹 Inicializa o cliente Mercado Pago
+const client = new MercadoPagoConfig({
+  accessToken: MERCADO_PAGO_TOKEN,
+  options: { timeout: 5000 },
+});
+
+const paymentClient = new Payment(client);
 
 export const createPayment = async (
   data: PaymentModel.CreatePaymentDTO
@@ -15,45 +23,52 @@ export const createPayment = async (
       return HttpHelper.badRequest("Dados incompletos para criar o pagamento.");
     }
 
-    const response = await axios.post(
-      "https://api.mercadopago.com/v1/payments",
-      {
-        transaction_amount: amount,
-        payment_method_id: payment_method,
-        payer,
+    // 🔹 Corpo da requisição para criar o pagamento direto
+    const body: any = {
+      transaction_amount: Number(amount.toFixed(2)),
+      description: "Pagamento via API",
+      payment_method_id: payment_method, // Ex: "pix", "credit_card"
+      external_reference: uuidv4(),
+      notification_url: "https://seuservico.com/api/payments/webhook",
+      payer: {
+        email: payer.email,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${MERCADO_PAGO_TOKEN}`,
-          "Content-Type": "application/json",
-          "X-Idempotency-Key": uuidv4(), // ✅ Header obrigatório
-        },
+    };
+
+    // 🔹 Caso o método seja cartão, adiciona dados extras
+    if (payment_method === "credit_card") {
+      if (!payer.token) {
+        return HttpHelper.badRequest(
+          "Token do cartão é obrigatório para pagamentos com cartão."
+        );
       }
-    );
 
-    const paymentData = response.data;
+      body.token = payer.token;
+      body.installments = payer.installments || 1;
+      body.statement_descriptor = "Minha Loja";
+    }
 
-    const payment: PaymentModel.Payment = PaymentModel.savePayment({
-      id: paymentData.id,
-      amount: paymentData.transaction_amount,
-      status: paymentData.status,
-      payer: paymentData.payer,
+    // 🔹 Cria o pagamento no Mercado Pago
+    const response = await paymentClient.create({ body });
+
+    // 🔹 Persiste localmente
+    const payment = PaymentModel.savePayment({
+      id: response.id,
+      amount: response.transaction_amount,
+      status: response.status,
+      payer: response.payer,
+      payment_method: response.payment_method_id,
+      qr_code: response.point_of_interaction?.transaction_data?.qr_code,
+      qr_code_base64:
+        response.point_of_interaction?.transaction_data?.qr_code_base64,
       createdAt: new Date(),
     });
 
     return HttpHelper.created(payment);
   } catch (error: any) {
-    console.error("❌ Erro em createPayment ->", error.response?.data || error.message);
+    console.error("❌ Erro em createPayment ->", error);
 
-    if (error.response && error.response.status) {
-      const status = error.response.status;
-      const message = error.response.data?.message || error.response.data || "Erro no pagamento";
-      return {
-        statusCode: status,
-        body: { error: message },
-      };
-    }
-
-    return HttpHelper.serverError("Falha ao criar pagamento no Mercado Pago.");
+    const message = error.message || "Falha ao criar pagamento no Mercado Pago.";
+    return HttpHelper.serverError(message);
   }
 };
