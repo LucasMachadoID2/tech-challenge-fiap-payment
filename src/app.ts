@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import paymentRoutes from "./routes/paymentRoutes";
-import { API_VERSION } from "./config";
+import { API_VERSION } from "./config/constants";
 
 const createApp = (): Application => {
   const app = express();

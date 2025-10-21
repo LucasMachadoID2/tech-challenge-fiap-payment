@@ -1,5 +1,5 @@
 import { MercadoPagoConfig, Payment } from "mercadopago";
-import { MERCADO_PAGO_TOKEN } from "./index";
+import { MERCADO_PAGO_TOKEN } from "./constants";
 
 const client = new MercadoPagoConfig({
   accessToken: MERCADO_PAGO_TOKEN,
