@@ -3,7 +3,8 @@ import * as PaymentController from "../controllers/paymentController";
 
 const router = Router();
 
-// Criar pagamento
-router.post("/payments", PaymentController.createPayment);
+
+router.post("/payments", PaymentController.createPayment);// criar pagamento
+router.get("/payments/:id", PaymentController.getPaymentById); // consulta pagamento
 
 export default router;

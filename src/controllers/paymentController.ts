@@ -10,3 +10,16 @@ export const createPayment = async (req: Request, res: Response): Promise<void> 
 
   res.status(httpResponse.statusCode).json(httpResponse.body);
 };
+
+
+export const getPaymentById = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const paymentId = Number(id);
+
+  const httpResponse: HttpResponse = await PaymentService.getPayment(paymentId);
+
+  res.status(httpResponse.statusCode).json(httpResponse.body);
+};
+
+
+

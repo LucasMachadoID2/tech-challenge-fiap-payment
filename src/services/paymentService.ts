@@ -24,22 +24,19 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
     // Cria pagamento no Mercado Pago
     const response = await paymentClient.create({ body });
 
-    // Persiste localmente
-    const payment = PaymentModel.savePayment({
-      id: response.id,
-      amount: response.transaction_amount,
-      status: response.status,
-      payer: response.payer,
-      payment_method: response.payment_method_id,
-      qr_code: response.point_of_interaction?.transaction_data?.qr_code,
-      qr_code_base64:
-        response.point_of_interaction?.transaction_data?.qr_code_base64,
-      createdAt: new Date(),
-    });
-
-    return HttpHelper.created(payment);
+    return HttpHelper.created(response); // Retorna diretamente o objeto da API
   } catch (error: any) {
     console.error("❌ Erro em createPayment ->", error);
     return HttpHelper.serverError(error.message || "Falha ao criar pagamento.");
+  }
+};
+
+export const getPayment = async (paymentId: number) => {
+  try {
+    const response = await paymentClient.get({ id: paymentId });
+    return HttpHelper.ok(response);
+  } catch (error: any) {
+    console.error("❌ Erro em getPayment ->", error);
+  return HttpHelper.serverError(error.message || "Falha ao criar pagamento.");
   }
 };
