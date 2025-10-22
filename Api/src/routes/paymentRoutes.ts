@@ -5,6 +5,6 @@ const router = Router();
 
 
 router.post("/payments", PaymentController.createPayment);// criar pagamento
-router.get("/payments/:id", PaymentController.getPaymentById); // consulta pagamento
+router.get("/payments/", PaymentController.findAllPayment); // consultar all pagamentos
 
 export default router;

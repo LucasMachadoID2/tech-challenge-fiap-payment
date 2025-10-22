@@ -21,3 +21,9 @@ export const savePayment = async (mpPayment: any) => {
 
   return savedPayment;
 };
+
+export const getAllPayments = async () => {
+  return prisma.payment.findMany({
+    orderBy: { createdAt: "desc" }, // opcional: ordena do mais recente para o mais antigo
+  });
+};

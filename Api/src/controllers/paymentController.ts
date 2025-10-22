@@ -12,12 +12,8 @@ export const createPayment = async (req: Request, res: Response): Promise<void> 
 };
 
 
-export const getPaymentById = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  const paymentId = Number(id);
-
-  const httpResponse: HttpResponse = await PaymentService.getPayment(paymentId);
-
+export const findAllPayment = async (req: Request, res: Response): Promise<void> => {
+  const httpResponse: HttpResponse = await PaymentService.getAllPayments();
   res.status(httpResponse.statusCode).json(httpResponse.body);
 };
 

@@ -38,8 +38,6 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
       updatedAt: new Date(mpPayment.date_last_updated),
     };
 
-
-
     //Salva no banco
     const savedPayment = await PaymentRepository.savePayment(paymentData);
 
@@ -50,12 +48,14 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
   }
 };
 
-export const getPayment = async (paymentId: number) => {
+
+export const getAllPayments = async () => {
   try {
-    const response = await paymentClient.get({ id: paymentId });
-    return HttpHelper.ok(response);
+    const payments = await PaymentRepository.getAllPayments();
+    return HttpHelper.ok(payments);
   } catch (error: any) {
-    console.error("❌ Erro em getPayment ->", error);
-  return HttpHelper.serverError(error.message || "Falha ao criar pagamento.");
+    console.error("❌ Erro em getAllPayments ->", error);
+    return HttpHelper.serverError(error.message || "Falha ao consultar pagamentos.");
   }
 };
+
