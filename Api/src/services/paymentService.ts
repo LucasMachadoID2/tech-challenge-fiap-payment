@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import * as PaymentModel from "../models/paymentModel";
 import * as HttpHelper from "../utils/http-helper";
 import { paymentClient } from "../config/mercado-pago.config";
+import * as PaymentRepository from "../repositories/paymentRepository";
+
 
 export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
   try {
@@ -22,9 +24,26 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
     };
 
     // Cria pagamento no Mercado Pago
-    const response = await paymentClient.create({ body });
+    const mpPayment = await paymentClient.create({ body }) as PaymentModel.MercadoPagoPaymentResponse;
 
-    return HttpHelper.created(response); // Retorna diretamente o objeto da API
+
+    // Monta objeto para salvar no banco
+    const paymentData: PaymentModel.PaymentDB = {
+      id: mpPayment.id.toString(),
+      amount: mpPayment.transaction_amount,
+      status: mpPayment.status,
+      payerId: mpPayment.payer.id,
+      payerEmail: mpPayment.payer.email ?? "sem-email@mp.com", // fallback se email for null
+      createdAt: new Date(mpPayment.date_created),
+      updatedAt: new Date(mpPayment.date_last_updated),
+    };
+
+
+
+    //Salva no banco
+    const savedPayment = await PaymentRepository.savePayment(paymentData);
+
+    return HttpHelper.created(mpPayment); // Retorna diretamente o objeto da API
   } catch (error: any) {
     console.error("❌ Erro em createPayment ->", error);
     return HttpHelper.serverError(error.message || "Falha ao criar pagamento.");

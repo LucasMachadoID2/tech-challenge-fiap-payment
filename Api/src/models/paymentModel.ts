@@ -18,6 +18,30 @@ export interface CreatePaymentDTO {
   payer: Payer;
 }
 
+export interface PaymentDB {
+  id: string;
+  amount: number;
+  status: string;
+  payerId: string;
+  payerEmail: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface MercadoPagoPaymentResponse {
+  id: number;
+  transaction_amount: number;
+  status: string;
+  payer: {
+    id: string;
+    email: string | null;
+  };
+  date_created: string;
+  date_last_updated: string;
+}
+
+
+
 const payments: Payment[] = [];
 
 export const savePayment = (payment: Payment): Payment => {
