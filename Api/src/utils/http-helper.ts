@@ -20,6 +20,11 @@ export const badRequest = (message: string): HttpResponse => ({
   body: { error: message },
 });
 
+export const notFound = (message: string): HttpResponse => ({
+  statusCode: 404,
+  body: { error: message },
+});
+
 export const serverError = (message = "Erro interno do servidor"): HttpResponse => ({
   statusCode: 500,
   body: { error: message },

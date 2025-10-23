@@ -27,3 +27,20 @@ export const getAllPayments = async () => {
     orderBy: { createdAt: "desc" }, // opcional: ordena do mais recente para o mais antigo
   });
 };
+
+export const getPaymentById = async (id: string): Promise<PaymentModel.PaymentDB | null> => {
+  return prisma.payment.findUnique({
+    where: { id },
+  });
+};
+
+export const updatePayment = async (payment: PaymentModel.PaymentDB) => {
+  return prisma.payment.update({
+    where: { id: payment.id },
+    data: {
+      status: payment.status,
+      updatedAt: payment.updatedAt,
+    },
+  });
+};
+
