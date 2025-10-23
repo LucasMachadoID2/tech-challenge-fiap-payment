@@ -3,6 +3,7 @@ import * as PaymentModel from "../models/paymentModel";
 import * as HttpHelper from "../utils/http-helper";
 import { paymentClient } from "../config/mercado-pago.config";
 import * as PaymentRepository from "../repositories/paymentRepository";
+import { notifyOtherService } from "../utils/notifyOtherService";
 
 
 export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
@@ -62,35 +63,45 @@ export const getAllPayments = async () => {
 
 export const handleWebhook = async (mpPayment: any) => {
   try {
-    // Validação mínima
-    if (!mpPayment || !mpPayment.id || !mpPayment.status) {
+    // 1️⃣ Validação mínima
+    if (!mpPayment?.id || !mpPayment?.status) {
       return HttpHelper.badRequest("Payload de webhook inválido.");
     }
 
-    // Busca o pagamento existente no banco
+    // 2️⃣ Busca o pagamento existente no banco
     const existingPayment = await PaymentRepository.getPaymentById(mpPayment.id);
-
     if (!existingPayment) {
-      // Caso o pagamento não exista, opcional: criar ou apenas ignorar
       return HttpHelper.notFound(`Pagamento com id ${mpPayment.id} não encontrado.`);
     }
 
-    // Atualiza apenas se o status mudou
-    if (existingPayment.status !== mpPayment.status) {
-      const updatedPayment: PaymentModel.PaymentDB = {
+    // 3️⃣ Atualiza apenas se o status mudou
+    const statusChanged = existingPayment.status !== mpPayment.status;
+    let updatedPayment = existingPayment;
+
+    if (statusChanged) {
+      updatedPayment = {
         ...existingPayment,
         status: mpPayment.status,
-        updatedAt: new Date(), // atualiza a data
+        updatedAt: new Date(),
       };
-
       await PaymentRepository.updatePayment(updatedPayment);
     }
 
-    // Retorna sucesso
-    return HttpHelper.ok({ message: "Pagamento atualizado com sucesso", id: mpPayment.id });
+    // 4️⃣ Dispara notificação se pago e se houver mudança de status
+    if (statusChanged && updatedPayment.status === "approved") {
+      try {
+        await notifyOtherService(updatedPayment);
+      } catch (err) {
+        console.error("❌ Falha ao notificar outro microsserviço:", err);
+      }
+    }
+
+    return HttpHelper.ok({message: statusChanged ? "Pagamento atualizado com sucesso": "Nenhuma alteração de status", id: mpPayment.id, });
+
   } catch (error: any) {
     console.error("❌ Erro em handleWebhook ->", error);
     return HttpHelper.serverError(error.message || "Falha ao processar webhook.");
   }
 };
+
 
