@@ -1,33 +1,37 @@
-version: "3.9"
+version: "3.8"
+
 services:
-  api:
-    build: .
-    container_name: api
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/meubanco?schema=public
-    depends_on:
-      - db
-    networks:
-      - backend
-
   db:
-    image: postgres:16
-    container_name: db
+    image: postgres:16-alpine # Você pode mudar a versão (ex: postgres:15, postgres:latest)
+    container_name: meu_postgres_db
+    restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: meubanco
+      POSTGRES_USER: danilo # Mude para seu nome de usuário
+      POSTGRES_PASSWORD: danilo # Mude para sua senha
+      POSTGRES_DB: bdtech # Mude para o nome do banco de dados desejado
     ports:
-      - "5432:5432"
+      - "5432:5432" # Mapeia a porta 5432 do seu PC para a porta 5432 do container
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - backend
-
-networks:
-  backend:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
+  postgres_data:
+    driver: local
+
+  # api:
+  #   build: .
+  #   container_name: node-api
+  #   restart: always
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URL: "postgresql://admin:admin@db:5432/mydb?schema=public"
+  #     NODE_ENV: development
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   command: >
+  #     sh -c "npx prisma migrate deploy && npm run start"

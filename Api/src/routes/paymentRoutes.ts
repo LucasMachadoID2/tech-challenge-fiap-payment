@@ -6,6 +6,6 @@ const router = Router();
 
 router.post("/payments", PaymentController.createPayment);// criar pagamento
 router.get("/payments/", PaymentController.findAllPayment); // consultar all pagamentos
-router.post("/payments/webhook", PaymentController.paymentWebhook); // recebe resposata de pagamento
+router.post("/payments/webhook", PaymentController.paymentWebhook); // recebe resposta de pagamento
 
 export default router;

@@ -63,7 +63,6 @@ export const getAllPayments = async () => {
 
 export const handleWebhook = async (mpPayment: any) => {
   try {
-    // 1️⃣ Validação mínima
     if (!mpPayment?.id || !mpPayment?.status) {
       return HttpHelper.badRequest("Payload de webhook inválido.");
     }
