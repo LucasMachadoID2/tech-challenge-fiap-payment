@@ -19,9 +19,9 @@ docker compose up -d
 docker ps
 
 # Rodar as migrations do Prisma
-npx prisma migrate dev --name init
+docker compose exec api npx prisma migrate dev --name init
 
 # Abrir o Prisma Studio
-npx prisma studio
+docker compose exec api npx prisma studio
 
 ```
