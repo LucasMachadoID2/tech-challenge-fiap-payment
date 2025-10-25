@@ -13,6 +13,11 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     build: .
@@ -23,12 +28,13 @@ services:
     ports:
       - "3333:3333" # API
       - "5555:5555" # Prisma Studio
-    depends_on:
-      - db
     volumes:
       - .:/app
       - /app/node_modules
-    command: ["npm", "run", "start"] # mantém o Prisma fora
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma db push && npm run start"
 
 volumes:
   postgres_data:

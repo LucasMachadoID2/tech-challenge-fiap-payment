@@ -27,4 +27,6 @@ docker compose exec api npx prisma studio
 # remove volume do docker
 docker compose down -v
 
+docker compose logs -f api
+
 ```
