@@ -10,28 +10,26 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT}:5432" # Porta do host : Porta do containercontainer
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: minha_api_node
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3333:3333" # API
+      - "5555:5555" # Prisma Studio
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: ["npm", "run", "start"] # mantém o Prisma fora
 
 volumes:
   postgres_data:
     driver: local
-
-  # api:
-  #   build: .
-  #   container_name: node-api
-  #   restart: always
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   environment:
-  #     DATABASE_URL: "postgresql://admin:admin@db:5432/mydb?schema=public"
-  #     NODE_ENV: development
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - .:/app
-  #     - /app/node_modules
-  #   command: >
-  #     sh -c "npx prisma migrate deploy && npm run start"

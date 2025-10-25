@@ -1,6 +1,5 @@
-# Etapa 1 — build
-FROM node:20-slim
-
+# Etapa 1: construir dependências
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
@@ -8,17 +7,13 @@ RUN npm install
 
 COPY . .
 
-# Etapa 2 — produção leve
+# Etapa 2: rodar app
 FROM node:20-alpine
-
 WORKDIR /app
-COPY --from=build /app ./
 
-# Instala o Prisma Client
-RUN npx prisma generate
+COPY --from=builder /app /app
 
-# Expõe a porta da API
 EXPOSE 3000
 
-# Rodar migrations + iniciar servidor automaticamente
-CMD npx prisma migrate deploy && npm run start:watch
+# Comando padrão: inicia o servidor
+CMD ["npm", "run", "start"]
