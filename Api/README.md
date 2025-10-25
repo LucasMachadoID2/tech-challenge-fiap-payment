@@ -13,7 +13,7 @@
 
 ```bash
 # Subir o banco de dados com Docker
-docker compose up -d
+docker compose up -d --build
 
 # Verificar se o container está rodando
 docker ps
@@ -23,5 +23,8 @@ docker compose exec api npx prisma migrate dev --name init
 
 # Abrir o Prisma Studio
 docker compose exec api npx prisma studio
+
+# remove volume do docker
+docker compose down -v
 
 ```
