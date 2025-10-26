@@ -29,4 +29,19 @@ docker compose down -v
 
 docker compose logs -f api
 
+#executar o k8s
+kubectl apply -f k8s-deploy.yml
+
+# Gerar imagem e enviar docker hub
+docker build -t danilloagt/fiap-payment:latest .
+docker push danilloagt/fiap-payment:latest
+
+
+kubectl delete -f .
+
+
+
+http://192.168.49.2:31215 #API
+http://192.168.49.2:31966 #Prism
+
 ```
