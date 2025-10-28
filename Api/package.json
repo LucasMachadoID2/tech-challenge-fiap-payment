@@ -1,10 +1,11 @@
 {
-  "name": "api-crud-boilerplate",
+  "name": "fiap-paymente",
   "version": "1.0.0",
   "description": "API com estrutura básica para criar CRUD com Typescript",
   "type": "module",
   "main": "server.js",
   "scripts": {
+    "test:bdd": "node --loader ts-node/esm ./node_modules/.bin/cucumber-js",
     "dist": "tsup src",
     "start": "tsx --env-file=.env src/server.ts",
     "start:watch": "tsx watch --env-file=.env src/server.ts",
@@ -15,9 +16,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@cucumber/cucumber": "^12.2.0",
+    "@jest/globals": "^30.2.0",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.5",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
+    "express": "^5.1.0",
+    "jest": "^30.2.0",
     "prisma": "^6.3.1",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
     "tsup": "^8.3.6",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
@@ -26,7 +35,6 @@
     "@prisma/client": "^6.3.1",
     "axios": "^1.12.2",
     "cors": "^2.8.5",
-    "express": "^4.21.2",
     "mercadopago": "^2.9.0",
     "uuid": "^13.0.0"
   }
