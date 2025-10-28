@@ -12,9 +12,7 @@ describe('PaymentController', () => {
 
   beforeEach(() => {
     // Mock da request
-    req = {
-      body: {}
-    } as Request;
+    req = { body: {} } as Request;
 
     // Mock da response
     res = {
@@ -35,7 +33,8 @@ describe('PaymentController', () => {
     req.body = {
       amount: 100,
       payment_method: 'pix',
-      payer: { email: 'test@test.com' }
+      payer: { 
+        email: 'test@test.com' }
     };
 
     mockCreatePayment.mockResolvedValue({
@@ -67,5 +66,28 @@ describe('PaymentController', () => {
     // Verifica
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ message: 'Dados incompletos' });
+  });
+
+  it('deve listar todos os pagamentos com sucesso', async () => {
+    // Prepara
+    const mockGetAllPayments = jest.spyOn(PaymentService, 'getAllPayments');
+    mockGetAllPayments.mockResolvedValue({
+      statusCode: 200,
+      body: [
+        { id: '123', amount: 100, status: 'pending', payment_method: 'pix' },
+        { id: '456', amount: 200, status: 'completed', payment_method: 'credit_card' }
+      ]
+    });
+
+    // Executa
+    await PaymentController.findAllPayment(req, res);
+
+    // Verifica
+    expect(mockGetAllPayments).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([
+      { id: '123', amount: 100, status: 'pending', payment_method: 'pix' },
+      { id: '456', amount: 200, status: 'completed', payment_method: 'credit_card' }
+    ]);
   });
 });
