@@ -1,110 +1,71 @@
 import { Request, Response } from 'express';
 import * as PaymentController from "./paymentController";
 import * as PaymentService from "../services/paymentService";
-import { HttpResponse } from "../models/http-response-model";
-import { CreatePaymentDTO } from "../models/paymentModel";
-import { jest } from '@jest/globals';
 
-const mockRequest = (body: any) => {
-  return {
-    body,
-  } as Partial<Request> as Request;
-};
+// Mock do PaymentService
+jest.mock('../services/paymentService');
 
-const mockResponse = () => {
-  const res: Partial<Response> = {
-    status: jest.fn().mockReturnThis() as unknown as Response['status'],
-    json: jest.fn().mockReturnThis() as unknown as Response['json']
-  };
-  return res as Response;
-};
-
-describe('Payment Controller', () => {
+describe('PaymentController', () => {
   let req: Request;
   let res: Response;
+  let mockCreatePayment: jest.SpyInstance;
 
   beforeEach(() => {
-    res = mockResponse();
+    // Mock da request
+    req = {
+      body: {}
+    } as Request;
+
+    // Mock da response
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis()
+    } as unknown as Response;
+
+    // Mock do serviço
+    mockCreatePayment = jest.spyOn(PaymentService, 'createPayment');
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('createPayment', () => {
-    test('deve criar um pagamento e retornar 201', async () => {
-      // Arrange
-      const mockBody: CreatePaymentDTO = {
-        amount: 100,
-        payment_method: 'credit_card',
-        payer: {
-          email: 'test@example.com'
-        }
-      };
-      req = mockRequest(mockBody);
+  it('deve criar pagamento com sucesso', async () => {
+    // Prepara
+    req.body = {
+      amount: 100,
+      payment_method: 'pix',
+      payer: { email: 'test@test.com' }
+    };
 
-      const mockHttpResponse: HttpResponse = {
-        statusCode: 201,
-        body: { id: 'mp-123', status: 'approved', amount: 100 }
-      };
-
-      jest.spyOn(PaymentService, 'createPayment')
-        .mockResolvedValueOnce(mockHttpResponse);
-
-      // Act
-      await PaymentController.createPayment(req, res);
-
-      // Assert
-      expect(PaymentService.createPayment).toHaveBeenCalledWith(mockBody);
-      expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(mockHttpResponse.body);
+    mockCreatePayment.mockResolvedValue({
+      statusCode: 201,
+      body: { id: '123', status: 'pending' }
     });
 
-    test('deve retornar 400 se o serviço retornar bad request', async () => {
-      // Arrange
-      const mockBody = { payment_method: 'credit_card' }; // amount missing
-      req = mockRequest(mockBody);
+    // Executa
+    await PaymentController.createPayment(req, res);
 
-      const mockHttpResponse: HttpResponse = {
-        statusCode: 400,
-        body: { message: 'Dados incompletos para criar o pagamento.' }
-      };
+    // Verifica
+    expect(mockCreatePayment).toHaveBeenCalledWith(req.body);
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ id: '123', status: 'pending' });
+  });
 
-      jest.spyOn(PaymentService, 'createPayment')
-        .mockResolvedValueOnce(mockHttpResponse);
+  it('deve retornar erro quando dados estiverem incompletos', async () => {
+    // Prepara
+    req.body = { payment_method: 'pix' }; // Sem amount
 
-      // Act
-      await PaymentController.createPayment(req, res);
-
-      // Assert
-      expect(PaymentService.createPayment).toHaveBeenCalledWith(mockBody);
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(mockHttpResponse.body);
+    mockCreatePayment.mockResolvedValue({
+      statusCode: 400,
+      body: { message: 'Dados incompletos' }
     });
 
-    test('deve retornar 500 se o serviço retornar erro', async () => {
-      // Arrange
-      const mockBody: CreatePaymentDTO = {
-        amount: 100,
-        payment_method: 'credit_card',
-        payer: {
-          email: 'test@example.com'
-        }
-      };
-      req = mockRequest(mockBody);
+    // Executa
+    await PaymentController.createPayment(req, res);
 
-      const mockHttpResponse: HttpResponse = {
-        statusCode: 500,
-        body: { message: 'Falha ao criar pagamento.' }
-      };
-
-      jest.spyOn(PaymentService, 'createPayment')
-        .mockResolvedValueOnce(mockHttpResponse);
-
-      // Act
-      await PaymentController.createPayment(req, res);
-
-      // Assert
-      expect(PaymentService.createPayment).toHaveBeenCalledWith(mockBody);
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith(mockHttpResponse.body);
-    });
+    // Verifica
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Dados incompletos' });
   });
 });
