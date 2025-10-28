@@ -38,7 +38,6 @@
     "@prisma/client": "^6.3.1",
     "axios": "^1.12.2",
     "cors": "^2.8.5",
-    "mercadopago": "^2.9.0",
-    "uuid": "^13.0.0"
+    "mercadopago": "^2.9.0"
   }
 }

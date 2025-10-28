@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import * as crypto from 'crypto';
 import * as PaymentModel from "../models/paymentModel";
 import * as HttpHelper from "../utils/http-helper";
 import { paymentClient } from "../config/mercado-pago.config";
@@ -19,7 +19,7 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
       transaction_amount: Number(amount.toFixed(2)),
       description: "Pagamento via API",
       payment_method_id: payment_method, // será "pix"
-      external_reference: uuidv4(),
+      external_reference: crypto.randomUUID(),
       notification_url: "https://seuservico.com/api/payments/webhook",
       payer: { email: payer.email },
     };
