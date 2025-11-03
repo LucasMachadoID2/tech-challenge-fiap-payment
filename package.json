@@ -11,7 +11,7 @@
     "start:watch": "tsx watch --env-file=.env src/server.ts",
     "start:dist": "npm run dist && node dist/index.js",
     "migrate": "npx prisma migrate dev --name init",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "keywords": [],
   "author": "",
