@@ -50,7 +50,7 @@ jobs:
           DATABASE_URL: "postgresql://testuser:testpassword@localhost:5432/testdb?schema=public"
 
       - name: Build application
-        run: npm run build
+        run: npm run dist
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
