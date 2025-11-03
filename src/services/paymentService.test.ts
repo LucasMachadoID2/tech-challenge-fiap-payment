@@ -1,17 +1,16 @@
-// Importa funções do jest e tipos
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';
 import * as PaymentModel from '../models/paymentModel';
 import * as HttpHelper from '../utils/http-helper';
 
-// --- Mocks das Dependências ---
 
-// 1. Mock do Crypto
-// Precisamos mockar o randomUUID para ele retornar um valor previsível
-import * as crypto from 'crypto';
-const mockUUID = 'mock-uuid-12345';
+import * as crypto from 'crypto'; // Importa o módulo real primeiro
+const mockUUID = 'mock-uuid-12345'; // Define a constante do UUID
+
+const actualCrypto = jest.requireActual('crypto') as typeof crypto;
+
 jest.mock('crypto', () => ({
-  ...jest.requireActual('crypto'), // Mantém o resto do módulo funcional
-  randomUUID: jest.fn(() => mockUUID),
+  ...actualCrypto, // Faz o spread do módulo real que importamos
+  randomUUID: jest.fn(() => mockUUID), // Agora mockUUID está definida
 }));
 
 // 2. Mock do Mercado Pago Client
@@ -63,15 +62,15 @@ describe('PaymentService', () => {
         payer: { email: 'test@example.com' },
       };
 
-      // Mock da resposta do Mercado Pago
-      const mockMpResponse: PaymentModel.MercadoPagoPaymentResponse = {
+      // Mock da resposta do Mercado Pago (CORREÇÃO 2 APLICADA)
+      const mockMpResponse = {
         id: 12345,
         status: 'pending',
         transaction_amount: 100,
         payer: { id: 'mp-payer-id', email: 'test@example.com' },
         date_created: '2023-01-01T10:00:00.000Z',
         date_last_updated: '2023-01-01T10:00:00.000Z',
-        // ...outros campos da API
+        api_response: {}, // <-- Propriedade que faltava
       };
       
       // Mock da resposta do nosso repositório
@@ -86,7 +85,8 @@ describe('PaymentService', () => {
       };
 
       // Configura os mocks para retornarem os valores esperados
-      mockedPaymentClient.create.mockResolvedValue(mockMpResponse);
+      // Adicionamos 'as any' para contornar a checagem de tipo complexa do SDK
+      mockedPaymentClient.create.mockResolvedValue(mockMpResponse as any); 
       mockedRepo.savePayment.mockResolvedValue(mockSavedPayment);
 
       // 2. Executa (Act)
@@ -204,7 +204,9 @@ describe('PaymentService', () => {
 
       mockedRepo.getPaymentById.mockResolvedValue(existingPayment);
       mockedRepo.updatePayment.mockResolvedValue({ ...existingPayment, status: 'approved' });
-      mockedNotifier.notifyOtherService.mockResolvedValue({ success: true }); // Mocka a notificação
+      
+      // CORREÇÃO 3 APLICADA
+      mockedNotifier.notifyOtherService.mockResolvedValue(undefined); // Mocka a notificação
 
       // 2. Executa
       const result = await paymentService.handleWebhook(mpPayment);
