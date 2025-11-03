@@ -110,9 +110,7 @@ spec:
       labels:
         app: api
     spec:
-      # --- DOIS INIT CONTAINERS ---
       initContainers:
-        # 1. Este usa 'busybox' (que tem 'nc') SÓ PARA ESPERAR
         - name: wait-for-postgres
           image: busybox:1.36
           command: [
@@ -120,8 +118,6 @@ spec:
               "-c",
               "echo 'Esperando pelo banco de dados (postgres-svc) na porta 5432...'; until nc -z postgres-svc 5432; do sleep 1; done; echo 'Banco de dados pronto!'",
             ]
-        # 2. Este usa a SUA imagem SÓ PARA A MIGRAÇÃO
-        #    (Roda depois que o 'wait-for-postgres' termina)
         - name: run-migration
           image: danilloagt/fiap-payment:latest
           imagePullPolicy: Always

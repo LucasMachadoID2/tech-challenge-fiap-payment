@@ -67,13 +67,13 @@ export const handleWebhook = async (mpPayment: any) => {
       return HttpHelper.badRequest("Payload de webhook inválido.");
     }
 
-    // 2️⃣ Busca o pagamento existente no banco
+    // Busca o pagamento existente no banco
     const existingPayment = await PaymentRepository.getPaymentById(mpPayment.id);
     if (!existingPayment) {
       return HttpHelper.notFound(`Pagamento com id ${mpPayment.id} não encontrado.`);
     }
 
-    // 3️⃣ Atualiza apenas se o status mudou
+    // Atualiza apenas se o status mudou
     const statusChanged = existingPayment.status !== mpPayment.status;
     let updatedPayment = existingPayment;
 
@@ -86,7 +86,7 @@ export const handleWebhook = async (mpPayment: any) => {
       await PaymentRepository.updatePayment(updatedPayment);
     }
 
-    // 4️⃣ Dispara notificação se pago e se houver mudança de status
+    // Dispara notificação se pago e se houver mudança de status
     if (statusChanged && updatedPayment.status === "approved") {
       try {
         await notifyOtherService(updatedPayment);
