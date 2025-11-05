@@ -13,6 +13,8 @@ export const savePayment = async (mpPayment: any) => {
     payerEmail: mpPayment.payerEmail,
     createdAt: new Date(mpPayment.createdAt),
     updatedAt: new Date(mpPayment.updatedAt),
+    qrImage: mpPayment.qrImage,
+    qrCode: mpPayment.qrCode,
   };
 
   const savedPayment = await prisma.payment.create({

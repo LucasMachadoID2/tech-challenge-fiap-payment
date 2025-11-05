@@ -17,4 +17,6 @@ model Payment {
   payerEmail String
   createdAt  DateTime
   updatedAt  DateTime
+  qrImage    String
+  qrCode     String
 }
