@@ -82,9 +82,10 @@ kubectl getAll
 
 ## Comando úteis para teste local
 
+## API k8s
+
 ```bash
-# Subir o banco de dados com Docker
-docker compose up -d --build
+
 
 # Verificar se o container está rodando
 docker ps
@@ -106,12 +107,37 @@ docker build -t danilloagt/fiap-payment:latest .
 docker push danilloagt/fiap-payment:latest
 
 #executar o k8s
-kubectl apply -f k8s-deploy.yml
+kubectl apply -f .
 
 # derrubar k8s
 kubectl delete -f .
 
 http://192.168.49.2:31215 #API
 http://192.168.49.2:31966 #Prisma
+
+```
+
+## API local
+
+```bash
+# Iniciar API
+npm run start:watch
+
+# Subir o banco de dados com Docker
+docker compose up -d --build
+
+# Rodar as migrations do Prisma
+npx prisma migrate dev --name init
+
+# Abrir o Prisma Studio
+npx prisma studio
+
+# Gerar imagem e enviar docker hub
+docker build -t danilloagt/fiap-payment:latest .
+docker push danilloagt/fiap-payment:latest
+
+http://localhost:3333 #API
+http://localhost:31966 #Prisma
+
 
 ```
