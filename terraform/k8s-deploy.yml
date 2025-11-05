@@ -87,15 +87,15 @@ spec:
     - name: api
       port: 3333
       targetPort: 3333
-      nodePort: 30001 # <-- Você define a porta manualmente
+      nodePort: 30001
     - name: prisma-studio
       port: 5555
       targetPort: 5555
-      nodePort: 30002 # <-- Você define a porta manualmente
+      nodePort: 30002
   selector:
     app: api
 ---
-# 6. Deployment da API (Sua Aplicação) - CORREÇÃO FINAL
+# 6. Deployment da API
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -143,7 +143,7 @@ spec:
           command: [
               "sh",
               "-c",
-              "export DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public\"; npx tsx src/server.ts",
+              "export DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public\"; npx prisma generate && npx tsx src/server.ts",
             ]
           envFrom:
             - configMapRef:
