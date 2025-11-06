@@ -85,8 +85,6 @@ kubectl getAll
 ## API k8s
 
 ```bash
-
-
 # Verificar se o container está rodando
 docker ps
 
@@ -126,6 +124,9 @@ npm run start:watch
 # Subir o banco de dados com Docker
 docker compose up -d --build
 
+# Resetar dados do prisma
+npx prisma migrate reset
+
 # Rodar as migrations do Prisma
 npx prisma migrate dev --name init
 
@@ -137,7 +138,7 @@ docker build -t danilloagt/fiap-payment:latest .
 docker push danilloagt/fiap-payment:latest
 
 http://localhost:3333 #API
-http://localhost:31966 #Prisma
+http://localhost:5555 #Prisma
 
 
 ```
