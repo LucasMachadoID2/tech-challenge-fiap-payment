@@ -85,14 +85,23 @@ kubectl getAll
 ## API k8s
 
 ```bash
-# Verificar se o container está rodando
-docker ps
+#inicie o minikube
+minikube start
 
-# Rodar as migrations do Prisma dentro do container
-docker compose exec api npx prisma migrate dev --name init
 
-# Abrir o Prisma Studio dentro do contaier
-docker compose exec api npx prisma studio
+# acesse a pasta '/terraform' e execute o comando:
+kubectl apply -f .
+
+# agora a API estra disonivel em:
+http://192.168.49.2:30001/api/v1.0 #API
+http://192.168.49.2:30002 #Prisma
+
+```
+
+```bash
+## comando uteis
+# Verificar k8s rodando
+watch kubectl get all
 
 # remover volume do docker
 docker compose down -v
@@ -100,18 +109,8 @@ docker compose down -v
 # verificar logs do container
 docker compose logs -f api
 
-# Gerar imagem e enviar docker hub
-docker build -t danilloagt/fiap-payment:latest .
-docker push danilloagt/fiap-payment:latest
-
-#executar o k8s
-kubectl apply -f .
-
 # derrubar k8s
 kubectl delete -f .
-
-http://192.168.49.2:31215 #API
-http://192.168.49.2:31966 #Prisma
 
 ```
 
