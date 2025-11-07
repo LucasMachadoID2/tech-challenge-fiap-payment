@@ -29,24 +29,24 @@ spec:
   ports:
     - port: 5432
   selector:
-    app: postgres
+    app: app-payment-database-postgree
   type: ClusterIP
 ---
 # 4. StatefulSet do Banco de Dados (Postgres)
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
+  name: app-payment-database-postgree
 spec:
   replicas: 1
   serviceName: "postgres-svc"
   selector:
     matchLabels:
-      app: postgres
+      app: app-payment-database-postgree
   template:
     metadata:
       labels:
-        app: postgres
+        app: app-payment-database-postgree
     spec:
       containers:
         - name: postgres
