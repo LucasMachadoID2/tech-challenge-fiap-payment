@@ -31,24 +31,28 @@ describe('PaymentRepository', () => {
     test('deve salvar e retornar o pagamento formatado corretamente', async () => {
       // 1. Prepara os dados de entrada
       const mpPayment = {
-        id: '12345',
-        amount: 100.5,
-        status: 'approved',
-        payerId: 'payer123',
-        payerEmail: 'payer@example.com',
-        createdAt: '2023-10-27T10:00:00.000Z',
-        updatedAt: '2023-10-27T10:01:00.000Z',
+  id: '12345',
+  amount: 100.5,
+  status: 'approved',
+  payerId: 'payer123',
+  payerEmail: 'payer@example.com',
+  createdAt: '2023-10-27T10:00:00.000Z',
+  updatedAt: '2023-10-27T10:01:00.000Z',
+  qrImage: 'mockQrImage',
+  qrCode: 'mockQrCode',
       };
 
       // 2. Prepara os dados que esperamos que o prisma.create retorne
       const expectedSavedPayment: PaymentModel.PaymentDB = {
-        id: '12345',
-        amount: 100.5,
-        status: 'approved',
-        payerId: 'payer123',
-        payerEmail: 'payer@example.com',
-        createdAt: new Date('2023-10-27T10:00:00.000Z'),
-        updatedAt: new Date('2023-10-27T10:01:00.000Z'),
+  id: '12345',
+  amount: 100.5,
+  status: 'approved',
+  payerId: 'payer123',
+  payerEmail: 'payer@example.com',
+  createdAt: new Date('2023-10-27T10:00:00.000Z'),
+  updatedAt: new Date('2023-10-27T10:01:00.000Z'),
+  qrImage: 'mockQrImage',
+  qrCode: 'mockQrCode',
       };
       
       // 3. Configura o mock: "Quando o prisma.payment.create for chamado,
@@ -91,6 +95,12 @@ describe('PaymentRepository', () => {
       // Verifica se a ordenação foi incluída
       expect(mockPrisma.payment.findMany).toHaveBeenCalledWith({
         orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          qrImage: true,
+          qrCode: true,
+          status: true
+        }
       });
       expect(result).toEqual(mockPaymentList);
     });
@@ -141,13 +151,15 @@ describe('PaymentRepository', () => {
     test('deve atualizar o status e updatedAt do pagamento', async () => {
       // 1. Prepara
       const paymentToUpdate: PaymentModel.PaymentDB = {
-        id: '123',
-        status: 'approved',
-        updatedAt: new Date(),
-        amount: 100,
-        payerEmail: 'test@test.com',
-        payerId: 'p1',
-        createdAt: new Date('2023-01-01'),
+  id: '123',
+  status: 'approved',
+  updatedAt: new Date(),
+  amount: 100,
+  payerEmail: 'test@test.com',
+  payerId: 'p1',
+  createdAt: new Date('2023-01-01'),
+  qrImage: 'mockQrImage',
+  qrCode: 'mockQrCode',
       };
       
       const updatedPayment = { ...paymentToUpdate }; // O retorno mockado

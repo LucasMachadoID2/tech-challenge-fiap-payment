@@ -70,18 +70,26 @@ describe('PaymentService', () => {
         payer: { id: 'mp-payer-id', email: 'test@example.com' },
         date_created: '2023-01-01T10:00:00.000Z',
         date_last_updated: '2023-01-01T10:00:00.000Z',
-        api_response: {}, // <-- Propriedade que faltava
+        api_response: {},
+        point_of_interaction: {
+          transaction_data: {
+            qr_code_base64: 'mockQrImage',
+            qr_code: 'mockQrCode',
+          }
+        }
       };
       
       // Mock da resposta do nosso repositório
       const mockSavedPayment: PaymentModel.PaymentDB = {
-        id: '12345',
-        amount: 100,
-        status: 'pending',
-        payerId: 'mp-payer-id',
-        payerEmail: 'test@example.com',
-        createdAt: new Date('2023-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2023-01-01T10:00:00.000Z'),
+  id: '12345',
+  amount: 100,
+  status: 'pending',
+  payerId: 'mp-payer-id',
+  payerEmail: 'test@example.com',
+  createdAt: new Date('2023-01-01T10:00:00.000Z'),
+  updatedAt: new Date('2023-01-01T10:00:00.000Z'),
+  qrImage: 'mockQrImage',
+  qrCode: 'mockQrCode',
       };
 
       // Configura os mocks para retornarem os valores esperados
