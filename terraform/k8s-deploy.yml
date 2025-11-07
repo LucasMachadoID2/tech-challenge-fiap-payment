@@ -5,7 +5,7 @@ metadata:
   name: api-config
 data:
   PORT: "3333"
-  POSTGRES_HOST: "postgres-svc"
+  POSTGRES_HOST: "app-payment-database-service"
   POSTGRES_PORT: "5432"
   POSTGRES_DB: "bdtech"
 ---
@@ -24,7 +24,7 @@ stringData:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-svc
+  name: app-payment-database-service
 spec:
   ports:
     - port: 5432
@@ -39,7 +39,7 @@ metadata:
   name: app-payment-database-postgree
 spec:
   replicas: 1
-  serviceName: "postgres-svc"
+  serviceName: "app-payment-database-service"
   selector:
     matchLabels:
       app: app-payment-database-postgree
@@ -80,7 +80,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-svc
+  name: app-payment-service
 spec:
   type: NodePort
   ports:
@@ -116,7 +116,7 @@ spec:
           command: [
               "sh",
               "-c",
-              "echo 'Esperando pelo banco de dados (postgres-svc) na porta 5432...'; until nc -z postgres-svc 5432; do sleep 1; done; echo 'Banco de dados pronto!'",
+              "echo 'Esperando pelo banco de dados (app-payment-database-service) na porta 5432...'; until nc -z app-payment-database-service 5432; do sleep 1; done; echo 'Banco de dados pronto!'",
             ]
         - name: run-migration
           image: danilloagt/fiap-payment:latest
