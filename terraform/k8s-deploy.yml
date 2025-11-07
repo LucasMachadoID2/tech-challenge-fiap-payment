@@ -93,22 +93,22 @@ spec:
       targetPort: 5555
       nodePort: 30002
   selector:
-    app: api
+    app: app-payment
 ---
 # 6. Deployment da API
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: app-payment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api
+      app: app-payment
   template:
     metadata:
       labels:
-        app: api
+        app: app-payment
     spec:
       initContainers:
         - name: wait-for-postgres
