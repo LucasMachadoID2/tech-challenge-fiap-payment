@@ -8,11 +8,40 @@ Ele se integra a um provedor de pagamentos externo (Mercado Pago) para processar
 
 ## 🧪 Evidências dos Testes Executados
 
-Todos os testes automatizados foram executados com sucesso
+O projeto possui uma suíte completa de testes automatizados que garantem a qualidade e confiabilidade do código. Os testes são executados em diferentes camadas da aplicação:
 
-<img src="./docs/evidencia-testes.png" alt="Evidência dos Testes" width="400"/>
+### 📋 Tipos de Testes Implementados
 
-<img src="./docs/evidencia-testes2.png" alt="Evidência dos Testes" width="400"/>
+- **🔬 Testes Unitários (Jest)**: Testam funções e métodos isoladamente
+
+  - Controllers: Validação da lógica de entrada/saída
+  - Services: Regras de negócio e integrações
+  - Repositories: Operações de banco de dados
+  - Utils: Funções auxiliares e helpers
+
+- **🎭 Testes BDD (Cucumber)**: Testes de comportamento em linguagem natural
+
+  - Cenários de criação de pagamentos
+  - Fluxos end-to-end da API
+  - Validação de requisitos funcionais
+
+- **📊 Cobertura de Código**: Relatórios detalhados de cobertura
+  - Análise de linhas, funções e branches testadas
+  - Identificação de código não coberto por testes
+  - Garantia de qualidade mínima exigida
+
+### 🏆 Resultados dos Testes
+
+Todos os testes automatizados foram executados com **100% de sucesso**:
+
+_Execução dos testes unitários com Jest_
+<img src="./docs/evidencia-testes.png" alt="Evidência dos Testes Unitários" width="500"/>
+
+_Pipeline executado com sucesso_
+<img src="./docs/evidencia-testes2.png" alt="Evidência dos Testes BDD" width="500"/>
+_Execução dos testes BDD com Cucumber_
+
+<img src="./docs/evidencia-testes3.png" alt="Evidência da Cobertura de Código" width="500"/>
 
 ## 🧩 Estrutura de Endpoints do Microsserviço de Pagamentos
 
