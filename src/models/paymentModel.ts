@@ -26,6 +26,8 @@ export interface PaymentDB {
   payerEmail: string;
   createdAt: Date;
   updatedAt: Date;
+  qrImage: string;
+  qrCode: string;
 }
 
 export interface MercadoPagoPaymentResponse {
@@ -35,6 +37,12 @@ export interface MercadoPagoPaymentResponse {
   payer: {
     id: string;
     email: string | null;
+  };
+  point_of_interaction: {
+    transaction_data: {
+      qr_code: string;
+      qr_code_base64: string;
+    };
   };
   date_created: string;
   date_last_updated: string;

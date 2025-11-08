@@ -5,7 +5,7 @@ metadata:
   name: api-config
 data:
   PORT: "3333"
-  POSTGRES_HOST: "postgres-svc"
+  POSTGRES_HOST: "app-payment-database-service"
   POSTGRES_PORT: "5432"
   POSTGRES_DB: "bdtech"
 ---
@@ -24,29 +24,29 @@ stringData:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-svc
+  name: app-payment-database-service
 spec:
   ports:
     - port: 5432
   selector:
-    app: postgres
+    app: app-payment-database-postgree
   type: ClusterIP
 ---
 # 4. StatefulSet do Banco de Dados (Postgres)
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
+  name: app-payment-database-postgree
 spec:
   replicas: 1
-  serviceName: "postgres-svc"
+  serviceName: "app-payment-database-service"
   selector:
     matchLabels:
-      app: postgres
+      app: app-payment-database-postgree
   template:
     metadata:
       labels:
-        app: postgres
+        app: app-payment-database-postgree
     spec:
       containers:
         - name: postgres
@@ -80,35 +80,35 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-svc
+  name: app-payment-service
 spec:
   type: NodePort
   ports:
     - name: api
       port: 3333
       targetPort: 3333
-      nodePort: 30001 # <-- Você define a porta manualmente
+      nodePort: 30001
     - name: prisma-studio
       port: 5555
       targetPort: 5555
-      nodePort: 30002 # <-- Você define a porta manualmente
+      nodePort: 30002
   selector:
-    app: api
+    app: app-payment
 ---
-# 6. Deployment da API (Sua Aplicação) - CORREÇÃO FINAL
+# 6. Deployment da API
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: app-payment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api
+      app: app-payment
   template:
     metadata:
       labels:
-        app: api
+        app: app-payment
     spec:
       initContainers:
         - name: wait-for-postgres
@@ -116,7 +116,7 @@ spec:
           command: [
               "sh",
               "-c",
-              "echo 'Esperando pelo banco de dados (postgres-svc) na porta 5432...'; until nc -z postgres-svc 5432; do sleep 1; done; echo 'Banco de dados pronto!'",
+              "echo 'Esperando pelo banco de dados (app-payment-database-service) na porta 5432...'; until nc -z app-payment-database-service 5432; do sleep 1; done; echo 'Banco de dados pronto!'",
             ]
         - name: run-migration
           image: danilloagt/fiap-payment:latest
@@ -143,7 +143,7 @@ spec:
           command: [
               "sh",
               "-c",
-              "export DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public\"; npx tsx src/server.ts",
+              "export DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public\"; npx prisma generate && npx tsx src/server.ts",
             ]
           envFrom:
             - configMapRef:

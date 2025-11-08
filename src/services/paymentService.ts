@@ -37,6 +37,8 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
       payerEmail: mpPayment.payer.email ?? "sem-email@mp.com", // fallback se email for null
       createdAt: new Date(mpPayment.date_created),
       updatedAt: new Date(mpPayment.date_last_updated),
+      qrImage: mpPayment.point_of_interaction.transaction_data.qr_code_base64,
+      qrCode: mpPayment.point_of_interaction.transaction_data.qr_code,
     };
 
     //Salva no banco

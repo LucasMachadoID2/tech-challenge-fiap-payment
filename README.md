@@ -6,19 +6,59 @@ Este é o microsserviço de pagamentos, sua principal responsabilidade é gerenc
 
 Ele se integra a um provedor de pagamentos externo (Mercado Pago) para processar as transações, armazena o status e os detalhes de cada pagamento em um banco de dados PostgreSQL e expõe uma API para que outros microsserviços possam iniciar pagamentos e consultar seu status. Além disso, ele lida com notificações (webhooks) do provedor para atualizar o status do pagamento em tempo real (por exemplo, de 'pendente' para 'aprovado') e notifica outros sistemas quando um pagamento é concluído com sucesso.
 
+## 🧪 Evidências dos Testes Executados
+
+O projeto possui uma suíte completa de testes automatizados que garantem a qualidade e confiabilidade do código. Os testes são executados em diferentes camadas da aplicação:
+
+### 📋 Tipos de Testes Implementados
+
+- **🔬 Testes Unitários (Jest)**: Testam funções e métodos isoladamente
+
+  - Controllers: Validação da lógica de entrada/saída
+  - Services: Regras de negócio e integrações
+  - Repositories: Operações de banco de dados
+  - Utils: Funções auxiliares e helpers
+
+- **🎭 Testes BDD (Cucumber)**: Testes de comportamento em linguagem natural
+
+  - Cenários de criação de pagamentos
+  - Fluxos end-to-end da API
+  - Validação de requisitos funcionais
+
+- **📊 Cobertura de Código**: Relatórios detalhados de cobertura
+  - Análise de linhas, funções e branches testadas
+  - Identificação de código não coberto por testes
+  - Garantia de qualidade mínima exigida
+
+### 🏆 Resultados dos Testes
+
+Todos os testes automatizados foram executados com **100% de sucesso**:
+
+_Execução dos testes unitários com Jest_
+
+<img src="./docs/evidencia-testes.png" alt="Evidência dos Testes Unitários" width="500"/>
+
+_Pipeline executado com sucesso_
+
+<img src="./docs/evidencia-testes2.png" alt="Evidência dos Testes BDD" width="500"/>
+
+_Execução dos testes BDD com Cucumber_
+
+<img src="./docs/evidencia-testes3.png" alt="Evidência da Cobertura de Código" width="500"/>
+
 ## 🧩 Estrutura de Endpoints do Microsserviço de Pagamentos
 
-| Método | Endpoint                   | Descrição                                                    |
-| ------ | -------------------------- | ------------------------------------------------------------ |
-| `POST` | `/api/v1/payments`         | Cria um novo pagamento.                                      |
-| `GET`  | `/api/v1/payments`         | Consulta todos os pagamentos.                                |
-| `POST` | `/api/v1/payments/webhook` | Recebe notificações do provedor de pagamento (Mercado Pago). |
+| Método | Endpoint            | Descrição                                                    |
+| ------ | ------------------- | ------------------------------------------------------------ |
+| `POST` | `/payments`         | Cria um novo pagamento.                                      |
+| `GET`  | `/payments`         | Consulta todos os pagamentos.                                |
+| `POST` | `/payments/webhook` | Recebe notificações do provedor de pagamento (Mercado Pago). |
 
 ## 🏛️ Arquitetura em Camadas
 
 O projeto segue uma arquitetura em camadas para organizar o código, promover a separação de responsabilidades e facilitar a manutenção e escalabilidade. Cada camada tem um papel bem definido:
 
-1.  **Rotas (Routes)**: Localizada em `src/routes/`, esta é a camada de entrada da API. Ela define os endpoints HTTP (ex: `/api/v1/payments`) e os direciona para os controladores correspondentes.
+1.  **Rotas (Routes)**: Localizada em `src/routes/`, esta é a camada de entrada da API. Ela define os endpoints HTTP (ex: `/payments`) e os direciona para os controladores correspondentes.
 
 2.  **Controladores (Controllers)**: Em `src/controllers/`, os controladores atuam como intermediários. Eles recebem as requisições HTTP da camada de rotas, extraem os dados (body, params, query) e invocam os métodos da camada de serviço. Ao final, formatam a resposta HTTP (sucesso ou erro) para o cliente.
 
@@ -49,8 +89,7 @@ Este projeto foi construído com as seguintes tecnologias e ferramentas:
 
 Antes de começar, certifique-se de ter as seguintes ferramentas instaladas e configuradas em seu ambiente:
 
-- **Node.js**: Versão 18.x ou superior.
-- **Docker e Docker Compose**: Para criar e gerenciar os contêineres da aplicação e do banco de dados localmente.
+- **Docker**: Para criar e gerenciar os contêineres da aplicação e do banco de dados localmente.
 - **Kubernetes**: Um cluster Kubernetes para o deploy. Pode ser um cluster local como [Minikube](https://minikube.sigs.k8s.io/docs/start/) ou o Kubernetes integrado ao Docker Desktop.
 - **kubectl**: A ferramenta de linha de comando do Kubernetes, configurada para interagir com seu cluster.
 
@@ -68,10 +107,10 @@ git clone https://github.com/LucasMachadoID2/tech-challenge-fiap-product.git
 minikube start
 ```
 
-3. Aplique os recursos do K8S:
+3. Aplique os recursos do K8S, acesse a pasta '/terraform' e execute o comando:
 
 ```bash
-kubectl apply -f k8s-deploy.yml
+kubectl apply -f .
 ```
 
 4. verifique o status dos recursos:
@@ -80,20 +119,21 @@ kubectl apply -f k8s-deploy.yml
 kubectl getAll
 ```
 
-## Comando úteis para teste local
+4. Recursos
 
 ```bash
-# Subir o banco de dados com Docker
-docker compose up -d --build
+http://192.168.49.2:30001/ #API
+http://192.168.49.2:30001/api-doc #Swagger
+http://192.168.49.2:30002 #Prisma
+```
 
-# Verificar se o container está rodando
-docker ps
+## Comando úteis para teste local
 
-# Rodar as migrations do Prisma dentro do container
-docker compose exec api npx prisma migrate dev --name init
+## API k8s
 
-# Abrir o Prisma Studio dentro do contaier
-docker compose exec api npx prisma studio
+```bash
+# Verificar k8s rodando
+watch kubectl get all
 
 # remover volume do docker
 docker compose down -v
@@ -101,17 +141,35 @@ docker compose down -v
 # verificar logs do container
 docker compose logs -f api
 
+# derrubar k8s
+kubectl delete -f .
+
+```
+
+## API local
+
+```bash
+# Iniciar API
+npm run start:watch
+
+# Subir o banco de dados com Docker
+docker compose up -d --build
+
+# Resetar dados do prisma
+npx prisma migrate reset
+
+# Rodar as migrations do Prisma
+npx prisma migrate dev --name init
+
+# Abrir o Prisma Studio
+npx prisma studio
+
 # Gerar imagem e enviar docker hub
 docker build -t danilloagt/fiap-payment:latest .
 docker push danilloagt/fiap-payment:latest
 
-#executar o k8s
-kubectl apply -f k8s-deploy.yml
+http://localhost:3333 #API
+http://localhost:5555 #Prisma
 
-# derrubar k8s
-kubectl delete -f .
-
-http://192.168.49.2:31215 #API
-http://192.168.49.2:31966 #Prisma
 
 ```
