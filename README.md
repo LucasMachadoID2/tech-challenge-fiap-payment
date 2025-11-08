@@ -35,10 +35,13 @@ O projeto possui uma suíte completa de testes automatizados que garantem a qual
 Todos os testes automatizados foram executados com **100% de sucesso**:
 
 _Execução dos testes unitários com Jest_
+
 <img src="./docs/evidencia-testes.png" alt="Evidência dos Testes Unitários" width="500"/>
 
 _Pipeline executado com sucesso_
+
 <img src="./docs/evidencia-testes2.png" alt="Evidência dos Testes BDD" width="500"/>
+
 _Execução dos testes BDD com Cucumber_
 
 <img src="./docs/evidencia-testes3.png" alt="Evidência da Cobertura de Código" width="500"/>
@@ -55,7 +58,7 @@ _Execução dos testes BDD com Cucumber_
 
 O projeto segue uma arquitetura em camadas para organizar o código, promover a separação de responsabilidades e facilitar a manutenção e escalabilidade. Cada camada tem um papel bem definido:
 
-1.  **Rotas (Routes)**: Localizada em `src/routes/`, esta é a camada de entrada da API. Ela define os endpoints HTTP (ex: `/api/v1/payments`) e os direciona para os controladores correspondentes.
+1.  **Rotas (Routes)**: Localizada em `src/routes/`, esta é a camada de entrada da API. Ela define os endpoints HTTP (ex: `/payments`) e os direciona para os controladores correspondentes.
 
 2.  **Controladores (Controllers)**: Em `src/controllers/`, os controladores atuam como intermediários. Eles recebem as requisições HTTP da camada de rotas, extraem os dados (body, params, query) e invocam os métodos da camada de serviço. Ao final, formatam a resposta HTTP (sucesso ou erro) para o cliente.
 
