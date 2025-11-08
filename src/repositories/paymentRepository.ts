@@ -2,8 +2,6 @@ import * as PaymentModel from "../models/paymentModel";
 import prisma from "../config/prisma";
 
 export const savePayment = async (mpPayment: any) => {    
-  console.log("mpPayment aqui");
-    console.log(mpPayment);
   
   const paymentData: PaymentModel.PaymentDB = {
     id: mpPayment.id,
