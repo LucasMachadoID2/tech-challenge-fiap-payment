@@ -1,5 +1,5 @@
 import { Given, When, Then, Before } from "@cucumber/cucumber";
-import { expect } from "@jest/globals";
+import { expect } from "chai";
 import request from "supertest";
 import { Application } from "express";
 import createApp from "../../src/app";
@@ -26,7 +26,7 @@ Given("I have valid payment data", function () {
 When('I send a POST request to {string}', async function (path: string) {
   
   // 'path' vai receber o valor "/payments" do .feature
-  const url = `/api/${API_VERSION}${path}`; 
+  const url = `${path}`;
 
   const dadosValidos = {
     amount: 100,
@@ -42,5 +42,5 @@ When('I send a POST request to {string}', async function (path: string) {
 // 3. Corresponde a "Then I should receive a response with status {int}"
 Then("I should receive a response with status {int}", function (statusCode: number) {
   // 'statusCode' vai receber o valor 201 do .feature
-  expect(response.status).toBe(statusCode);
+  expect(response.status).to.equal(statusCode);
 });
