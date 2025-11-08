@@ -6,13 +6,21 @@ Este é o microsserviço de pagamentos, sua principal responsabilidade é gerenc
 
 Ele se integra a um provedor de pagamentos externo (Mercado Pago) para processar as transações, armazena o status e os detalhes de cada pagamento em um banco de dados PostgreSQL e expõe uma API para que outros microsserviços possam iniciar pagamentos e consultar seu status. Além disso, ele lida com notificações (webhooks) do provedor para atualizar o status do pagamento em tempo real (por exemplo, de 'pendente' para 'aprovado') e notifica outros sistemas quando um pagamento é concluído com sucesso.
 
+## 🧪 Evidências dos Testes Executados
+
+Todos os testes automatizados foram executados com sucesso
+
+<img src="./docs/evidencia-testes.png" alt="Evidência dos Testes" width="400"/>
+
+<img src="./docs/evidencia-testes2.png" alt="Evidência dos Testes" width="400"/>
+
 ## 🧩 Estrutura de Endpoints do Microsserviço de Pagamentos
 
-| Método | Endpoint                   | Descrição                                                    |
-| ------ | -------------------------- | ------------------------------------------------------------ |
-| `POST` | `/api/v1/payments`         | Cria um novo pagamento.                                      |
-| `GET`  | `/api/v1/payments`         | Consulta todos os pagamentos.                                |
-| `POST` | `/api/v1/payments/webhook` | Recebe notificações do provedor de pagamento (Mercado Pago). |
+| Método | Endpoint            | Descrição                                                    |
+| ------ | ------------------- | ------------------------------------------------------------ |
+| `POST` | `/payments`         | Cria um novo pagamento.                                      |
+| `GET`  | `/payments`         | Consulta todos os pagamentos.                                |
+| `POST` | `/payments/webhook` | Recebe notificações do provedor de pagamento (Mercado Pago). |
 
 ## 🏛️ Arquitetura em Camadas
 
@@ -49,8 +57,7 @@ Este projeto foi construído com as seguintes tecnologias e ferramentas:
 
 Antes de começar, certifique-se de ter as seguintes ferramentas instaladas e configuradas em seu ambiente:
 
-- **Node.js**: Versão 18.x ou superior.
-- **Docker e Docker Compose**: Para criar e gerenciar os contêineres da aplicação e do banco de dados localmente.
+- **Docker**: Para criar e gerenciar os contêineres da aplicação e do banco de dados localmente.
 - **Kubernetes**: Um cluster Kubernetes para o deploy. Pode ser um cluster local como [Minikube](https://minikube.sigs.k8s.io/docs/start/) ou o Kubernetes integrado ao Docker Desktop.
 - **kubectl**: A ferramenta de linha de comando do Kubernetes, configurada para interagir com seu cluster.
 
@@ -68,10 +75,10 @@ git clone https://github.com/LucasMachadoID2/tech-challenge-fiap-product.git
 minikube start
 ```
 
-3. Aplique os recursos do K8S:
+3. Aplique os recursos do K8S, acesse a pasta '/terraform' e execute o comando:
 
 ```bash
-kubectl apply -f k8s-deploy.yml
+kubectl apply -f .
 ```
 
 4. verifique o status dos recursos:
@@ -80,26 +87,19 @@ kubectl apply -f k8s-deploy.yml
 kubectl getAll
 ```
 
+4. Recursos
+
+```bash
+http://192.168.49.2:30001/ #API
+http://192.168.49.2:30001/api-doc #Swagger
+http://192.168.49.2:30002 #Prisma
+```
+
 ## Comando úteis para teste local
 
 ## API k8s
 
 ```bash
-#inicie o minikube
-minikube start
-
-
-# acesse a pasta '/terraform' e execute o comando:
-kubectl apply -f .
-
-# agora a API estra disonivel em:
-http://192.168.49.2:30001/api/v1.0 #API
-http://192.168.49.2:30002 #Prisma
-
-```
-
-```bash
-## comando uteis
 # Verificar k8s rodando
 watch kubectl get all
 
