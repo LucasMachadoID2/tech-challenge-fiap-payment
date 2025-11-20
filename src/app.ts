@@ -8,7 +8,12 @@ import swaggerSpec from "./config/swagger";
 const createApp = (): Application => {
   const app = express();
 
-  app.use(cors());
+  app.use(cors({
+    origin: true, // aceita qualquer origem
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
   app.use(express.json());
 
   app.use(paymentRoutes);

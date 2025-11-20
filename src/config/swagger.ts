@@ -7,12 +7,12 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Documentação da API de pagamentos do Tech Challenge FIAP',
   },
-  servers: [
-    {
-  url: 'http://localhost:3333',
-      description: 'Servidor local',
-    },
-  ],
+    servers: [
+      {
+        url: '/',
+        description: 'Servidor dinâmico (host da requisição)',
+      },
+    ],
   components: {
     schemas: {
       CreatePaymentDTO: {

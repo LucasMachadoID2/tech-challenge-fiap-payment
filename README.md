@@ -122,9 +122,9 @@ kubectl getAll
 4. Recursos
 
 ```bash
-http://192.168.49.2:30001/ #API
-http://192.168.49.2:30001/api-doc #Swagger
-http://192.168.49.2:30002 #Prisma
+http://ip-da-sua-maquina-aqui:30001/payments #API
+http://ip-da-sua-maquina-aqui:30001/api-doc #Swagger
+http://ip-da-sua-maquina-aqui:30002 #Prisma
 ```
 
 ## Comando úteis para teste local
@@ -168,7 +168,8 @@ npx prisma studio
 docker build -t danilloagt/fiap-payment:latest .
 docker push danilloagt/fiap-payment:latest
 
-http://localhost:3333 #API
+http://localhost:3333/payments #API
+http://localhost:3333/api-docs #Swagger
 http://localhost:5555 #Prisma
 
 
