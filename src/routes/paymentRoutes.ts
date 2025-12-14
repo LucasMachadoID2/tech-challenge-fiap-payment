@@ -65,10 +65,10 @@ router.get("/payments/", PaymentController.findAllPayment); // consultar all pag
  *                 example: "1325297372"
  *               status:
  *                 type: string
- *                 example: "approved"
+ *                 example: "PAID"
  *           example:
  *             id: "1325297372"
- *             status: "approved"
+ *             status: "PAID"
  *     responses:
  *       200:
  *         description: Webhook recebido

@@ -34,7 +34,7 @@ const swaggerDefinition = {
         properties: {
           id: { type: 'string', example: '1' },
           amount: { type: 'number', example: 100.5 },
-          status: { type: 'string', example: 'approved' },
+          status: { type: 'string', example: 'PAID' },
           payerId: { type: 'string', example: 'payer1' },
           payerEmail: { type: 'string', example: 'test@example.com' },
           createdAt: { type: 'string', format: 'date-time', example: '2023-10-27T10:00:00.000Z' },

@@ -123,7 +123,7 @@ kubectl getAll
 
 ```bash
 http://ip-da-sua-maquina-aqui:30001/payments #API
-http://ip-da-sua-maquina-aqui:30001/api-doc #Swagger
+http://ip-da-sua-maquina-aqui:30001/api-docs #Swagger
 http://ip-da-sua-maquina-aqui:30002 #Prisma
 ```
 

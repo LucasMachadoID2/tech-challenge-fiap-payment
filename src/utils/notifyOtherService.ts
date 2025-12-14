@@ -2,15 +2,12 @@ import axios from "axios";
 import { PaymentDB } from "../models/paymentModel";
 
 export const notifyOtherService = async (payment: PaymentDB) => {
+  const url = `http://app-order-service:8083/v1/orders/update-payment-status/${payment.id}?status=${payment.status}`;
   try {
-    // await axios.post("http://outro-microsservico.local/pagamentos", {
-    //   id: payment.id,
-    //   amount: payment.amount,
-    //   payerId: payment.payerId,
-    //   status: payment.status,
-    // });
-    console.log("Outro microsserviço notificado!");
+    await axios.post(url);
+    console.log("Order service notificado!");
   } catch (err) {
-    console.error("Erro ao notificar outro microsserviço:", err);
+    console.error("Erro ao notificar order service:", err);
+    throw new Error("Falha ao notificar order service");
   }
 };
