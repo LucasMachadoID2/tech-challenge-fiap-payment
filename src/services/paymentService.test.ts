@@ -174,7 +174,7 @@ describe('PaymentService', () => {
     test('deve retornar uma lista de pagamentos com sucesso (caminho feliz)', async () => {
       // 1. Prepara
       const mockPaymentList: PaymentModel.PaymentDB[] = [
-        { id: '1', status: 'approved' } as PaymentModel.PaymentDB,
+        { id: '1', status: 'PAID' } as PaymentModel.PaymentDB,
         { id: '2', status: 'pending' } as PaymentModel.PaymentDB,
       ];
       mockedRepo.getAllPayments.mockResolvedValue(mockPaymentList);
@@ -205,13 +205,13 @@ describe('PaymentService', () => {
   // Testes para handleWebhook
   describe('handleWebhook', () => {
     
-    test('deve atualizar o pagamento e notificar se o status mudou para "approved"', async () => {
+    test('deve atualizar o pagamento e notificar se o status mudou para "PAID"', async () => {
       // 1. Prepara
-      const mpPayment = { id: '123', status: 'approved' };
+      const mpPayment = { id: '123', status: 'PAID' };
       const existingPayment = { id: '123', status: 'pending', /* ... */ } as PaymentModel.PaymentDB;
 
       mockedRepo.getPaymentById.mockResolvedValue(existingPayment);
-      mockedRepo.updatePayment.mockResolvedValue({ ...existingPayment, status: 'approved' });
+      mockedRepo.updatePayment.mockResolvedValue({ ...existingPayment, status: 'PAID' });
       
       // CORREÇÃO 3 APLICADA
       mockedNotifier.notifyOtherService.mockResolvedValue(undefined); // Mocka a notificação
@@ -225,7 +225,7 @@ describe('PaymentService', () => {
       // Verifica se o status e o updatedAt foram atualizados
       expect(mockedRepo.updatePayment).toHaveBeenCalledWith(expect.objectContaining({
         id: '123',
-        status: 'approved',
+        status: 'PAID',
         updatedAt: expect.any(Date), // Verifica se um novo Date foi setado
       }));
       
@@ -237,7 +237,7 @@ describe('PaymentService', () => {
     });
 
     test('deve retornar 400 (Bad Request) se o payload do webhook for inválido', async () => {
-      const invalidPayload = { status: 'approved' }; // Faltando ID
+      const invalidPayload = { status: 'PAID' }; // Faltando ID
       const result = await paymentService.handleWebhook(invalidPayload);
       
       expect(result.statusCode).toBe(400);
@@ -246,7 +246,7 @@ describe('PaymentService', () => {
     });
 
     test('deve retornar 404 (Not Found) se o pagamento não existir no banco', async () => {
-      const mpPayment = { id: '123', status: 'approved' };
+      const mpPayment = { id: '123', status: 'PAID' };
       mockedRepo.getPaymentById.mockResolvedValue(null); // Pagamento não encontrado
 
       const result = await paymentService.handleWebhook(mpPayment);
@@ -257,8 +257,8 @@ describe('PaymentService', () => {
     });
     
     test('NÃO deve atualizar nem notificar se o status não mudou', async () => {
-      const mpPayment = { id: '123', status: 'approved' };
-      const existingPayment = { id: '123', status: 'approved' } as PaymentModel.PaymentDB; // Status já era 'approved'
+      const mpPayment = { id: '123', status: 'PAID' };
+      const existingPayment = { id: '123', status: 'PAID' } as PaymentModel.PaymentDB; // Status já era 'PAID'
 
       mockedRepo.getPaymentById.mockResolvedValue(existingPayment);
 
@@ -286,11 +286,11 @@ describe('PaymentService', () => {
 
     test('deve retornar 200 OK mesmo se a notificação falhar', async () => {
       // O webhook NÃO PODE falhar se a notificação falhar
-      const mpPayment = { id: '123', status: 'approved' };
+      const mpPayment = { id: '123', status: 'PAID' };
       const existingPayment = { id: '123', status: 'pending' } as PaymentModel.PaymentDB;
 
       mockedRepo.getPaymentById.mockResolvedValue(existingPayment);
-      mockedRepo.updatePayment.mockResolvedValue({ ...existingPayment, status: 'approved' });
+      mockedRepo.updatePayment.mockResolvedValue({ ...existingPayment, status: 'PAID' });
       // Mocka a notificação para dar erro
       mockedNotifier.notifyOtherService.mockRejectedValue(new Error('Falha ao notificar')); 
 

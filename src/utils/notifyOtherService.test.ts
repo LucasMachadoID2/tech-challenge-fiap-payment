@@ -5,7 +5,7 @@ describe('notifyOtherService', () => {
   const payment: PaymentDB = {
     id: '1',
     amount: 100,
-    status: 'approved',
+    status: 'PAID',
     payerId: 'payer1',
     payerEmail: 'test@example.com',
     createdAt: new Date(),

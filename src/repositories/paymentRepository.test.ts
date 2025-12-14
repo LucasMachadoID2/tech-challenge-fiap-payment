@@ -33,7 +33,7 @@ describe('PaymentRepository', () => {
       const mpPayment = {
   id: '12345',
   amount: 100.5,
-  status: 'approved',
+  status: 'PAID',
   payerId: 'payer123',
   payerEmail: 'payer@example.com',
   createdAt: '2023-10-27T10:00:00.000Z',
@@ -46,7 +46,7 @@ describe('PaymentRepository', () => {
       const expectedSavedPayment: PaymentModel.PaymentDB = {
   id: '12345',
   amount: 100.5,
-  status: 'approved',
+  status: 'PAID',
   payerId: 'payer123',
   payerEmail: 'payer@example.com',
   createdAt: new Date('2023-10-27T10:00:00.000Z'),
@@ -80,7 +80,7 @@ describe('PaymentRepository', () => {
     test('deve retornar uma lista de pagamentos', async () => {
       // 1. Prepara os dados
       const mockPaymentList: PaymentModel.PaymentDB[] = [
-        { id: '1', status: 'approved', /* ...outros campos */ } as PaymentModel.PaymentDB,
+        { id: '1', status: 'PAID', /* ...outros campos */ } as PaymentModel.PaymentDB,
         { id: '2', status: 'pending', /* ...outros campos */ } as PaymentModel.PaymentDB,
       ];
 
@@ -111,7 +111,7 @@ describe('PaymentRepository', () => {
     test('deve retornar um pagamento pelo ID', async () => {
       // 1. Prepara
       const paymentId = 'existing-id';
-      const mockPayment = { id: paymentId, status: 'approved', /* ... */ } as PaymentModel.PaymentDB;
+      const mockPayment = { id: paymentId, status: 'PAID', /* ... */ } as PaymentModel.PaymentDB;
       
       // 2. Configura mock
       mockPrisma.payment.findUnique.mockResolvedValue(mockPayment);
@@ -152,7 +152,7 @@ describe('PaymentRepository', () => {
       // 1. Prepara
       const paymentToUpdate: PaymentModel.PaymentDB = {
   id: '123',
-  status: 'approved',
+  status: 'PAID',
   updatedAt: new Date(),
   amount: 100,
   payerEmail: 'test@test.com',

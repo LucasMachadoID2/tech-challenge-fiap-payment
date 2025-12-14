@@ -11,7 +11,7 @@ Before(function () {
   mpCreateStub = sinon.stub(paymentClient, 'create').resolves({
     id: uniqueId,
     transaction_amount: 100,
-    status: 'approved',
+    status: 'PAID',
     payer: { id: 'payer-id', email: 'teste@teste.com' },
     point_of_interaction: {
       transaction_data: {

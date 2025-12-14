@@ -6,7 +6,7 @@ export const savePayment = async (mpPayment: any) => {
   const paymentData: PaymentModel.PaymentDB = {
     id: mpPayment.id,
     amount: mpPayment.amount,
-    status: mpPayment.status,
+    status: "CREATED",
     payerId: mpPayment.payerId,
     payerEmail: mpPayment.payerEmail,
     createdAt: new Date(mpPayment.createdAt),

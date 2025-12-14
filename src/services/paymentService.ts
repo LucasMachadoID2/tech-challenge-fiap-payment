@@ -89,7 +89,7 @@ export const handleWebhook = async (mpPayment: any) => {
     }
 
     // Dispara notificação se pago e se houver mudança de status
-    if (statusChanged && updatedPayment.status === "approved") {
+    if (statusChanged && updatedPayment.status === "PAID") {
       try {
         await notifyOtherService(updatedPayment);
       } catch (err) {
