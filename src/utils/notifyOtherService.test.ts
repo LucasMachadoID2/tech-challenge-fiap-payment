@@ -20,13 +20,18 @@ describe('notifyOtherService', () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
+
   it('deve chamar console.log ao notificar com sucesso', async () => {
+    jest.spyOn(require('axios'), 'post').mockResolvedValue({});
     await notifyOtherService(payment);
-    expect(console.log).toHaveBeenCalledWith('Outro microsserviço notificado!');
+    expect(console.log).toHaveBeenCalledWith('Order service notificado!');
   });
 
-  it('deve chamar console.error em caso de erro', async () => {
-    jest.mock('axios', () => ({ post: jest.fn().mockRejectedValue(new Error('Falha')) }));
-    expect(true).toBe(true);
+  it('deve chamar console.error e lançar erro em caso de falha', async () => {
+    jest.spyOn(require('axios'), 'post').mockRejectedValue(new Error('Falha'));
+    await expect(notifyOtherService(payment)).rejects.toThrow('Falha ao notificar order service');
+    expect(console.error).toHaveBeenCalledWith(
+      'Erro ao notificar order service:', expect.any(Error)
+    );
   });
 });

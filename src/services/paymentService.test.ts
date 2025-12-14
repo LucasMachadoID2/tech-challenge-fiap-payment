@@ -298,7 +298,7 @@ describe('PaymentService', () => {
       
       expect(mockedRepo.updatePayment).toHaveBeenCalledTimes(1);
       expect(mockedNotifier.notifyOtherService).toHaveBeenCalledTimes(1); // Tentou notificar
-      expect(result.statusCode).toBe(200); // Mas o webhook retornou OK mesmo assim
+      expect(result.statusCode).toBe(502); // Agora retorna erro 502 se falhar a notificação
     });
   });
 });

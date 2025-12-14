@@ -33,7 +33,7 @@ describe('PaymentRepository', () => {
       const mpPayment = {
   id: '12345',
   amount: 100.5,
-  status: 'PAID',
+      status: 'CREATED',
   payerId: 'payer123',
   payerEmail: 'payer@example.com',
   createdAt: '2023-10-27T10:00:00.000Z',
@@ -46,7 +46,7 @@ describe('PaymentRepository', () => {
       const expectedSavedPayment: PaymentModel.PaymentDB = {
   id: '12345',
   amount: 100.5,
-  status: 'PAID',
+      status: 'CREATED',
   payerId: 'payer123',
   payerEmail: 'payer@example.com',
   createdAt: new Date('2023-10-27T10:00:00.000Z'),
