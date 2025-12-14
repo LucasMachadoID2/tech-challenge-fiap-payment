@@ -89,15 +89,19 @@ export const handleWebhook = async (mpPayment: any) => {
     }
 
     // Dispara notificação se pago e se houver mudança de status
+
     if (statusChanged && updatedPayment.status === "PAID") {
       try {
         await notifyOtherService(updatedPayment);
       } catch (err) {
-        console.error("❌ Falha ao notificar outro microsserviço:", err);
+        return {
+          statusCode: 502,
+          body: { error: "Pagamento atualizado, mas falha ao notificar order service." },
+        };
       }
     }
 
-    return HttpHelper.ok({message: statusChanged ? "Pagamento atualizado com sucesso": "Nenhuma alteração de status", id: mpPayment.id, });
+    return HttpHelper.ok({message: statusChanged ? "Pagamento atualizado com sucesso": "Nenhuma alteração de status", id: mpPayment.id });
 
   } catch (error: any) {
     console.error("❌ Erro em handleWebhook ->", error);
