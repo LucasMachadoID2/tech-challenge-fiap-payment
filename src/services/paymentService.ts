@@ -32,7 +32,7 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
     const paymentData: PaymentModel.PaymentDB = {
       id: mpPayment.id.toString(),
       amount: mpPayment.transaction_amount,
-      status: mpPayment.status,
+      status: "CREATED",
       payerId: mpPayment.payer.id,
       payerEmail: mpPayment.payer.email ?? "sem-email@mp.com", // fallback se email for null
       createdAt: new Date(mpPayment.date_created),
@@ -44,7 +44,7 @@ export const createPayment = async (data: PaymentModel.CreatePaymentDTO) => {
     //Salva no banco
     const savedPayment = await PaymentRepository.savePayment(paymentData);
 
-    return HttpHelper.created(mpPayment); // Retorna diretamente o objeto da API
+    return HttpHelper.created(savedPayment); // Retorna os dados salvos no banco
   } catch (error: any) {
     console.error("❌ Erro em createPayment ->", error);
     return HttpHelper.serverError(error.message || "Falha ao criar pagamento.");

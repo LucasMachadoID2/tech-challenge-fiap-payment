@@ -36,8 +36,8 @@ describe('PaymentRepository', () => {
       status: 'CREATED',
   payerId: 'payer123',
   payerEmail: 'payer@example.com',
-  createdAt: '2023-10-27T10:00:00.000Z',
-  updatedAt: '2023-10-27T10:01:00.000Z',
+  createdAt: new Date('2023-10-27T10:00:00.000Z'),
+  updatedAt: new Date('2023-10-27T10:01:00.000Z'),
   qrImage: 'mockQrImage',
   qrCode: 'mockQrCode',
       };

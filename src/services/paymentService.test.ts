@@ -65,7 +65,7 @@ describe('PaymentService', () => {
       // Mock da resposta do Mercado Pago (CORREÇÃO 2 APLICADA)
       const mockMpResponse = {
         id: 12345,
-        status: 'pending',
+        status: 'CREATED',
         transaction_amount: 100,
         payer: { id: 'mp-payer-id', email: 'test@example.com' },
         date_created: '2023-01-01T10:00:00.000Z',
@@ -83,7 +83,7 @@ describe('PaymentService', () => {
       const mockSavedPayment: PaymentModel.PaymentDB = {
   id: '12345',
   amount: 100,
-  status: 'pending',
+  status: 'CREATED',
   payerId: 'mp-payer-id',
   payerEmail: 'test@example.com',
   createdAt: new Date('2023-01-01T10:00:00.000Z'),
@@ -121,7 +121,7 @@ describe('PaymentService', () => {
 
       // Verificou se a resposta foi um 201 Created
       expect(result.statusCode).toBe(201);
-      expect(result.body).toEqual(mockMpResponse); // Retorna o objeto do MP
+      expect(result.body).toEqual(mockSavedPayment); // Retorna o objeto salvo no banco
     });
 
     test('deve retornar 400 (Bad Request) se os dados estiverem incompletos', async () => {
